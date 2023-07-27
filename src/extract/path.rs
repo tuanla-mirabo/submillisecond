@@ -11,7 +11,6 @@ use serde::de::DeserializeOwned;
 use self::de::PercentDecodedStr;
 use crate::extract::rejection::*;
 use crate::extract::FromRequest;
-use crate::params::Params;
 use crate::response::IntoResponse;
 use crate::{RequestContext, Response};
 
@@ -150,10 +149,7 @@ where
     type Rejection = PathRejection;
 
     fn from_request(req: &mut RequestContext) -> Result<Self, Self::Rejection> {
-        let params = req
-            .extensions_mut()
-            .get::<Params>()
-            .unwrap()
+        let params = req.params
             .iter()
             .map(|(k, v)| {
                 if let Some(decoded) = PercentDecodedStr::new(v) {
